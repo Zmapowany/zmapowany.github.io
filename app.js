@@ -1,22 +1,6 @@
 
-/*
-const COLOR_RANGE = [
-    [1, 152, 189],
-    [73, 227, 206],
-    [216, 254, 181],
-    [254, 237, 177],
-    [254, 173, 84],
-    [209, 55, 78]
-  ];
-*/
-// source: Natural Earth http://www.naturalearthdata.com/ via geojson.xyz
-//const AIR_PORTS =
-//  'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_airports.geojson';
-
-
-
 // const HomeWins = './HomeWins2019_2020.geojson';
-const HomeWins = './AllSeasons.json';
+const HomeWins = './data/AllSeasons.json';
 
 // create color array for geojson layer
 function createColor (input) {
@@ -80,7 +64,6 @@ const deckgl = new deck.DeckGL({
       wireframe: false,
       fp64: false,
       getElevation: d => d.properties.sumHWins * 500,
-      //getFillColor: f => COLOR_SCALE(f.properties.sumHWins),
       getFillColor: d => createColor(d.properties.sumHWins),
       getLineColor: d => [255, 255, 255],
 
