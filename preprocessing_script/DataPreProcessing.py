@@ -16,7 +16,7 @@ stadiums = pd.read_csv("./stadiums-with-GPS-coordinates.csv")
 #import NUTS2 regions
 #nuts2 = geopandas.read_file('./NUTS2_countiesUK.json')
 
-#select only stadiums in England
+#select only stadiums in England (and Wales)
 stadEngland = stadiums[stadiums["Country"] == 'England']
 
 
