@@ -25,7 +25,7 @@ cursor: pointer;
 
 #control {
     width: 300px;
-    height: 60%;
+    height: 70%;
     position: absolute;
     top: 50;
     left: 50;
@@ -102,4 +102,28 @@ cursor: pointer;
   font-size: 14px;
   position: absolute;
   font-family: sans-serif;
+}
+
+/*Toggleable club buttons*/
+
+.bournemouthButton {
+  position: absolute;
+  bottom: 400px;
+  left: 110px;
+  z-index: 1001;
+  background-color:rgb(169, 0, 17);
+  /*background-image: url("/badges/bournemouth.png");
+  background-size: 60px 60px;*/
+  height: 40px;  
+  width: 180px;
+  color: rgb(255, 255, 255);
+  font-size: 1em;
+  text-decoration: none;
+  text-align: center;
+  border: 0.1px solid rgb(0, 0, 0);
+  cursor: pointer;
+}
+
+.bournemouthButton:hover {
+  box-shadow: 4px 4px 4px 4px black;
 }
