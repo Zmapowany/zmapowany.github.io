@@ -1,37 +1,39 @@
 
 //data
 const HomeWins = './AllSeasonsGen2.json';
-const stadiums = './HomeWinsAllSeasons.geojson';
-
+const stadiumsIcons = './homeWinsIcons.json';
 
 //toggle on and off
-function onoffBournemouth(){
+function onoffClubs(){
   currentvalue = document.getElementById('onoff').value;
   if(currentvalue == "3D Off"){
     //change button value to ON -> turn ON this layer
     document.getElementById("onoff").value="3D On";
     onoff.style.opacity = 1; 
     
+
     deckgl.setProps({layers: [
-      new deck.GeoJsonLayer({
-        id: 'stadiums',
-        data: stadiums,
+      
+      //LAYERs #1 -- Clubs locations
+           
+      new deck.IconLayer({
+        id: 'stadiumsCrests',
+        data: stadiumsIcons,
         visible: false,
-        // Styles
-        filled: true,
-        pointRadiusMinPixels: 2,
-        pointRadiusScale: 1000,
-        //getRadius: 1000,
-        getFillColor: [209, 29, 39],
-        // Interactive props
+        getIcon: d => ({
+          url: d.iconUrl,
+          width: 128,
+          height: 128,
+          anchorY: 128
+        }),
+        getSize: d => d.HomeTeam * 0.5,
         pickable: false,
-        autoHighlight: true,
-        onClick: info =>
-          // eslint-disable-next-line
-          info.object && alert(`Team: ${info.object.properties.Team} \n Nr of Nations:  (${info.object.properties.nrOfNations}) \n List of Nations: (${info.object.properties.listOfNations}) \n List of Nations and Players: (${info.object.properties.listOfNationsPlayers})`)
-          
+        sizeScale: 1,
+        getPosition: d => [d.Longitude, d.Latitude],
+        sizeMinPixels: 30,
       }),
-      //LAYERs #2 -- clubs players and their home locations
+
+      //LAYERs #2 -- HomeWins
       new deck.GeoJsonLayer({
         // data
         id: 'homewins',
@@ -45,44 +47,44 @@ function onoffBournemouth(){
         fp64: false,
         getElevation: d => d.properties.sumHWins * 500,
         getFillColor: d => createColor(d.properties.sumHWins),
-        //getLineColor: d => [255, 255, 255],
         getLineColor: d => [0, 0, 0],
-  
         // Interactive props
         pickable: true,
         autoHighlight: true,
-        //onClick: info => info.object && alert(`${info.object.properties.sumHWins} (${info.object.properties.TeamsNames}) (${info.object.properties.sumCapacity})`)
-        //onHover: info => setTooltip(info.object, info.x, info.y)
       })
     ]
   })
-//toggle OFF
+//toggle OFF and turn ON Clubs locations
   }
   else{
     //change button value to OFF -> turn OFF this layer
     document.getElementById("onoff").value="3D Off";
     onoff.style.opacity = 0.5;
 
+
+    
     deckgl.setProps({layers: [
-      new deck.GeoJsonLayer({
-        id: 'stadiums',
-        data: stadiums,
+      
+      //LAYERs #1 -- Clubs locations
+           
+      new deck.IconLayer({
+        id: 'stadiumsCrests',
+        data: stadiumsIcons,
         visible: true,
-        // Styles
-        filled: true,
-        pointRadiusMinPixels: 2,
-        pointRadiusScale: 1000,
-        //getRadius: 1000,
-        getFillColor: [209, 29, 39],
-        // Interactive props
+        getIcon: d => ({
+          url: d.iconUrl,
+          width: 128,
+          height: 128,
+          anchorY: 128
+        }),
+        getSize: d => d.HomeTeam * 0.5,
         pickable: false,
-        autoHighlight: true,
-        onClick: info =>
-          // eslint-disable-next-line
-          info.object && alert(`Team: ${info.object.properties.Team} \n Nr of Nations:  (${info.object.properties.nrOfNations}) \n List of Nations: (${info.object.properties.listOfNations}) \n List of Nations and Players: (${info.object.properties.listOfNationsPlayers})`)
-          
+        sizeScale: 1,
+        getPosition: d => [d.Longitude, d.Latitude],
+        sizeMinPixels: 35,
       }),
-      //LAYERs #2 -- clubs players and their home locations
+
+      //LAYERs #2 -- HomeWins
 
       new deck.GeoJsonLayer({
         // data
@@ -97,14 +99,10 @@ function onoffBournemouth(){
         fp64: false,
         getElevation: d => d.properties.sumHWins * 500,
         getFillColor: d => createColor(d.properties.sumHWins),
-        //getLineColor: d => [255, 255, 255],
         getLineColor: d => [0, 0, 0],
-  
         // Interactive props
         pickable: true,
         autoHighlight: true,
-        //onClick: info => info.object && alert(`${info.object.properties.sumHWins} (${info.object.properties.TeamsNames}) (${info.object.properties.sumCapacity})`)
-        //onHover: info => setTooltip(info.object, info.x, info.y)
       })
     ]
   })
@@ -113,8 +111,7 @@ function onoffBournemouth(){
 
 
 
-
-// create color array for geojson layer
+// create color array for choropleth
 function createColor (input) {
     if (input <= 4){
         colArr = [21, 74, 234]
@@ -145,9 +142,6 @@ function getTooltip({object}) {
   ${object.properties.TeamsNames}`;
   }
 
-  //make artificial ground for shadows 
-  //const landCover = [[[-5.840542, 49.255583], [-5.840542, 58.207266], [5.183309, 58.207266], [5.183309, 49.196]]];
-
   //lighting effects
 const ambientLight = new deck.AmbientLight({
   color: [255, 255, 255],
@@ -176,35 +170,22 @@ const deckgl = new deck.DeckGL({
     latitude: 52.2324,
     zoom: 6,
     minZoom: 5,
-    maxZoom: 15,
+    maxZoom: 10,
     pitch: 40.5,
-    // bearing: -27.396674584323023
     bearing: -60
   },
   controller: true,
   
   //some lights
-  
   effects: [
     new deck.LightingEffect({directionalLight, ambientLight})
   ],
 
-
-
+  //initial layers
   layers: [
 
-//add homeWins
+    //LAYERs #2 -- HomeWins
 
-//in case shadow needed
-/*
-new deck.PolygonLayer({
-  id: 'ground',
-  data: landCover,
-  stroked: false,
-  getPolygon: f => f,
-  getFillColor: [0, 0, 0, 0]
-}),
-*/
     new deck.GeoJsonLayer({
       // data
       id: 'homewins',
@@ -218,18 +199,12 @@ new deck.PolygonLayer({
       fp64: false,
       getElevation: d => d.properties.sumHWins * 500,
       getFillColor: d => createColor(d.properties.sumHWins),
-      //getLineColor: d => [255, 255, 255],
       getLineColor: d => [0, 0, 0],
-
       // Interactive props
       pickable: true,
       autoHighlight: true,
-      //onClick: info => info.object && alert(`${info.object.properties.sumHWins} (${info.object.properties.TeamsNames}) (${info.object.properties.sumCapacity})`)
-      //onHover: info => setTooltip(info.object, info.x, info.y)
-    })
+    }),
 
   ],
   getTooltip
-
-  
 });
